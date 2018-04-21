@@ -6,9 +6,6 @@ use Illuminate\Support\ServiceProvider;
 
 class CartServiceProvider extends ServiceProvider
 {
-
-    protected $defer = true;
-
     /**
      * Bootstrap any application services.
      *
@@ -26,13 +23,8 @@ class CartServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('Cart', function ($app) {
-        	return new App\Cart($app->make(App\CartSession::class));
+        $this->app->bind('Cart', function () {
+        	return new \Therour\Cart\App\Cart;
         });
-    }
-
-    public function provides()
-    {
-        return [App\Cart::class];
     }
 }

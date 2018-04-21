@@ -10,20 +10,24 @@ class Cart
 
 	protected $attributes = [];
 
-	public function __construct(CartSession $session)
+	public function __construct()
 	{
-		$this->session = $session;
+		$this->session = new CartSession;
 		$this->attributes = $this->session->get();
 	}
 
-	public function getInstance()
+	public static function getInstance()
 	{
-		return $this;
+		return new Cart;
 	}
 	
 	public function getData()
 	{
 		$data = $this->attributes;
+		if (! isset($data['items'])) {
+			return $data;
+		}
+
 		$data['items'] = collect($data['items'])->map( function ($item, $key) {
 			return $item();
 		})->all();
@@ -67,7 +71,8 @@ class Cart
 		}
 
 		foreach ($this->attributes['items'] as $index => $item) {
-			if ($item()['id'] === $newItem['id']) return $index;
+			$newItem = is_array($newItem) ? $newItem['id'] : $newItem;
+			if ($item()['id'] === $newItem) return $index;
 		}
 
 		return false;

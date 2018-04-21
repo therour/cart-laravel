@@ -98,7 +98,7 @@ class Item
 		}
 
 		if (is_string($item)) {
-			return new Item($item.time(), $item);
+			return new Item($item.'_'.time(), $item);
 		}
 	}
 }

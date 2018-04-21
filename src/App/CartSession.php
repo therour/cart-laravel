@@ -8,9 +8,9 @@ class CartSession
 {
 	protected $session;
 
-	public function __construct(App $app)
+	public function __construct()
 	{
-		$this->session = $app->getInstance()->make('session');
+		$this->session = App::getInstance()->make('session');
 	}
 
 	public function set($value)
