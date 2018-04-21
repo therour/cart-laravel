@@ -1,0 +1,21 @@
+{
+    "name": "therour/cart-laravel",
+    "description": "Cart for Laravel 5",
+    "type": "package",
+    "require": {
+        "illuminate/support": "~5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Therour\\Cart\\": "src/"
+        }
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nizom Sidiq",
+            "email": "nizomsidiq@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev"
+}
