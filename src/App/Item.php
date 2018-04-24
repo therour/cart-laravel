@@ -81,8 +81,32 @@ class Item
 		return $this;
 	}
 
+	public function getId()
+	{
+		return $this->id;
+	}
+
+	public function getName()
+	{
+		return $this->name;
+	}
+
+	public function isIdentic(Item $item)
+	{
+		return $this->id === $item->getId();
+	}
+
+	public function isIdenticByName(Item $item)
+	{
+		return $this->name === $item->getName();
+	}
+
 	public static function make($item)
 	{
+		if ($item instanceof Item) {
+			return $item;
+		}
+
 		if (is_array($item)) {
 			$id = $item['id'];
 			$name = $item['name'];
@@ -99,6 +123,13 @@ class Item
 
 		if (is_string($item)) {
 			return new Item($item.'_'.time(), $item);
+		}
+
+		if ($item instanceof \Illuminate\Database\Eloquent\Model) {
+			$itemObj = new Item($item->id, $item->name);
+			if (isset($item->weight)) $itemObj->weight($item->weight);
+			if (isset($item->price)) $itemObj->price($item->price);
+			return $itemObj;
 		}
 	}
 }

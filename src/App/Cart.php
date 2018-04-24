@@ -38,30 +38,29 @@ class Cart
 	public function setCustomerData($data = array())
 	{
 		$this->attributes['customer'] = $data;
-		return $this;
+		return $this->saveCustomer();
 	}
 
 	public function addCustomerData($data)
 	{
 		[$key, $value] = array_divide($data);
 		$this->attributes['customer'][$key] = $value;
-		return $this;
+		return $this->saveCustomer();
 	}
 
 	public function addItem($item, $qty = 1)
 	{	
-		$exist = $this->getItemIndex($item); 
+		$item = Item::make($item);
 
-		if ($exist !== false) {
-			$this->attributes['items'][$exist]->addQuantity($qty);
+		if (($exist = $this->getItemIndex($item)) !== false) {
+
+			$added = $this->attributes['items'][$exist]->addQuantity($qty);
 		}
 
-		$item = Item::make($item);
-		if ($qty > 1) $item->quantity($qty);
+		$added = $this->attributes['items'][] = $item->addQuantity($qty - 1);
 		
-		$this->attributes['items'][] = $item;
-
-		return $this;
+		$this->saveItems();
+		return $added;
 	}
 
 	public function getItemIndex($newItem)
@@ -71,8 +70,7 @@ class Cart
 		}
 
 		foreach ($this->attributes['items'] as $index => $item) {
-			$newItem = is_array($newItem) ? $newItem['id'] : $newItem;
-			if ($item()['id'] === $newItem) return $index;
+			if ($item->isIdentic($newItem)) return $index;
 		}
 
 		return false;
@@ -86,7 +84,19 @@ class Cart
 	public function save()
 	{
 		$this->session->set($this->attributes);
-		return true;
+		return $this;
+	}
+
+	protected function saveCustomer()
+	{
+		$this->session->setCustomer($this->attributes['customer']);
+		return $this;
+	}
+
+	protected function saveItems()
+	{
+		$this->session->setItems($this->attributes['items']);
+		return $this;
 	}
 
 	private function getItemsWeight()
